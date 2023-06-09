@@ -20,11 +20,7 @@ Your response should with format below:
                 "id": "**targetResourceId**"
             },
             "authInfo": {
-                "authType": "secret",
-                "secretInfo": {
-                    "secretType": "rawValue",
-                    "value": "secret"
-                }
+                "authType": "secret"
             }
         }
     }
@@ -43,13 +39,17 @@ Besides, the resourceUri and targetResourceId must be one of the following that 
 }]
 
 
-If user mentioned that they want to connect by system assigned identity, update the authInfo field in JSON by 
+If user want to connect by system assigned identity, update the authInfo field in JSON by 
 ```
 "authInfo": {
     "authType": "systemAssignedIdentity",
 }
 ```
-If the targetResource is a kind of rdms database Service, such as Azure Database for Mysql,  Azure Database for Postgresql, Azure SQL server. Add a property "name" in AuthInfo as below which is user name of database. If user don't provide it, generate a random string
+If the targetResource is a kind of rdms database Service, such as Azure Database for Mysql,  Azure Database for Postgresql, Azure SQL server. Add the following properties in `AuthInfo`.
 ```
 "name": "username",
+"secretInfo": {
+    "secretType": "rawValue",
+    "value": "userpassword"
+}
 ```
