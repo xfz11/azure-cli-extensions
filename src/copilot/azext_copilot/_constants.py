@@ -1,42 +1,5 @@
 DELIMITER = '####'
 
-# SYSTEM_PROMPT = '''
-# You are azure service management assistant. You will be provided with customer service queries. \
-# The customer service query will be delimited with \
-# #### characters.
-# Output a python list of objects, where each object has \
-# the following format:
-#     "category": <one of "create resource", \
-#     "connect resources", \
-#     "find resource", \
-#     "monitor resource", 
-#     "cleanup resource">,
-# OR
-#     "resources_types": <a list of products that must \
-#     be found in the allowed products below>
-
-# step1: find the category of the request
-# step2: find the resource types mentioned in the request where the resources_types must be associated with \
-# the correct category in the allowed resource types list below.
-# If no resources_types or categories are found, output an empty list.
-
-# Allowed resource types: 
-
-# create resource category:
-# web app
-# storage
-# container app
-# mysql
-
-# connect resources category:
-# web app
-# storage
-# container app
-# mysql
-
-# Only output the list of objects, with nothing else.
-# '''
-
 SYSTEM_PROMPT = '''
 You are azure service management assistant. You will be provided with customer service queries. \
 The customer service query will be delimited with \
@@ -45,10 +8,7 @@ Output a json list of objects, where each object has\
 the following format:
 {
     "action": <one of "create resource", \
-    "connect resources", \
-    "find resource", \
-    "monitor resource", 
-    "cleanup resource">,
+    "connect resources">,
     "sub_prompt": <the step description of the action>\
 }
 
@@ -58,17 +18,18 @@ You must follow these rules:
 
 step1: from the request, think about the steps to complete it. 
 step2: for each step, find the action from the below action list. \
-Try your best to find the action in the allowed actions list below, if not found, skip that step. \
+Try your best to find the action in the allowed actions list below, if not found, merge the step to the next step's sub_prompt. \
 Input the step description as the sub_prompt.
 step3: for each step, find the resources associated with the action. \
 For each resource, find the best match resource type from the allowed resource types list, if not found, skip that step. \
-If the action is create resource, find its resource type of the resource to be created with the key as "resource_type". One create resource action can only have one resource type in the action object. \
+If the action is create resource, find its resource type of the resource to be created with the key as "resource_type" and add the key in the action json object. 
+Each create resource action must have one and only one resource type in the action json object. \
 If find resources that don't belong to any resource types below, just include it in the sub_prompt. \
-If the action is connect resources, find its source resource type and target resource type with the key as ""source_resource_type" and "target_resource_type" respectively.
+If the action is connect resources, find its source resource type and target resource type with the key as "source_resource_type" and "target_resource_type" respectively.
+Include all the context of the resources in the sub_prompt. \
 If no resources_types or actions are found, output an empty list.
 If the resource_type does not belong to any below actions, do not output it.
 step3: orgainzie the actions as a json list in the format above. 
-
 Allowed resource types for each action: 
 create resource action:
 web app (prefered if it is not container) 
@@ -121,27 +82,13 @@ Your response should with format below:
 If ResourceGroup not provided, choose from below that best matches request
 {resource_group_list}
 
+If WebAppName is provided, use the exact name provided.
 If WebAppName is not provided, use a random string with 10 characters, with prefix `app-`
 
-If AppServicePlanId not provided, choose from below that best matches request
-[{{
-    "id": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/houk-test/providers/Microsoft.Web/serverfarms/ASP-houktest-8820",
-    "location": "Central US",
-    "kind": "windows",
-    "sku": {{
-        "tier": "PremiumV2"
-    }},
-}}, {{
-    "id": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/houk-test/providers/Microsoft.Web/serverfarms/houk-fa-plan",
-    "location": "East US",
-    "kind": "linux",
-    "sku": {{
-        "tier": "Basic"
-    }},
-}}]
+If AppServicePlanId not provided, choose from below that best matches request. 
 {app_service_plan_list}
 
-If Location not provided, use the most popular Azure Regions
+If Location not provided, use the most popular Azure Regions. Make sure that the location is the same as the AppServicePlan location.
 
 If Runtime not provided,  choose from below that best matches request
 {{
@@ -206,7 +153,7 @@ The customer service query will be delimited with #### characters.
 
 Output a json file with the properties in the following format, you should strictly stick to this json format:
 {{
-    "uri": "https://management.azure.com/subscriptions/{subscription_id}/resourceGroups/{{resourceGroupName}}/providers/Microsoft.Storage/storageAccounts/{{storageAccountName}}?api-version=2022-09-01",
+    "id": "/subscriptions/{subscription_id}/resourceGroups/{{resourceGroupName}}/providers/Microsoft.Storage/storageAccounts/{{storageAccountName}}?api-version=2022-09-01",
     "payload": {{
         "sku": {{
             "name": "Standard_GRS"
@@ -245,20 +192,18 @@ Output a json file with the properties in the following format, you should stric
 
 Replace {{resourceGroupName}} and {{storageAccountName}} with the values from the input string. 
 Also replace any of the values if the input string has explictly specified a new value, otherwise use values provided above.
-If no resource group name provided from the input string, \
-get it from one of the existing resource group list below which best matches the request.
 
-Existing resource group list:
+If resourceGroupName not provided, choose from below that best matches request:
 {resource_group_list}
 
 Choose the SKU name that is available in the specified location from the below list which best matches the request.
-Existing SKU list:
 {storage_sku_list}
 '''
 
 CREATE_CREATION_TEMPLATE = '''
 You are a bot helping create Azure resources.
 
+The users' query will be delimited with #### characters.
 I will give you a json format with placeholders, the placeholders are with format **placeholder**. 
 You help replace the placeholders according to users' request or the default ones, and output the json for users.
 
@@ -285,7 +230,7 @@ Your response should with format below:
     }}
 }}
 
-If linkerName is not provided, use a random string with 8 characters, with prefix such as `storage-`, the prefix should be changed by user input
+If linkerName is not provided, use a random string with 8 characters, with prefix such as `storage_`, the prefix should be changed by user input
 
 The resourceUri must be a kind of a compute resource, including Azure Web App, Azure Spring App, Azure Container App.
 
@@ -319,3 +264,5 @@ DEFAULT_RESOURCE_GROUP = '''
 '''
 
 DEFAULT_RESOURCE_GROUP_NAME = "houk-test"
+
+COLUMN_WIDTH = 30

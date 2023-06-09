@@ -8,8 +8,6 @@ from knack.util import CLIError
 from .response_utils import process_prompt
 from azure.cli.core.commands.client_factory import get_subscription_id
 
-logger = get_logger(__name__)
-
 def create_copilot(cmd, prompt):
     sub_id = get_subscription_id(cmd.cli_ctx)
     payloads = process_prompt(prompt, sub_id)
