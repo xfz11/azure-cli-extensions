@@ -5,7 +5,7 @@ import json
 
 def get_completion_from_messages(messages, 
                                  model="gpt-35-turbo", 
-                                 temperature=0, max_tokens=500):
+                                 temperature=0, max_tokens=800):
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
@@ -16,7 +16,7 @@ def get_completion_from_messages(messages,
     )
     return response.choices[0].message["content"]
 
-def get_category_and_resource_type(user_prompt):
+def get_sub_prompts(user_prompt):
     messages =  [  
         {
             'role':'system', 
@@ -27,19 +27,18 @@ def get_category_and_resource_type(user_prompt):
             'content': f"{DELIMITER}{user_prompt}{DELIMITER}"
         },  
     ] 
-    category_and_resource_response = get_completion_from_messages(messages)
-    category_and_resource_response = json.loads(category_and_resource_response)[0]
-    return category_and_resource_response
+    sub_prompts = get_completion_from_messages(messages)
+    sub_prompts = json.loads(sub_prompts)
+    return sub_prompts
 
-def fill_in_templates(category_and_resource_type):
-    category = category_and_resource_type['category']
-    resources_types = category_and_resource_type['resources_types']
-    if len(resources_types) == 1:
-      return get_template[category][resources_types[0]]()
-    elif len(resources_types) == 2:
-      return get_template[category](resources_types[0], resources_types[1])
+def fill_in_templates(sub_prompt, subscription_id):
+    action = sub_prompt['action']
+    if action == "create resource":
+      return get_template[action][sub_prompt['resource_type']](subscription_id)
+    elif action == "connect resources":
+      return get_template[action](sub_prompt['source_resource_type'], sub_prompt['target_resource_type'], subscription_id)
     else:
-       print("too many resources types")
+       print("waiting for future release")
        return None
 
 def get_payload(assistant_template, user_prompt):
@@ -56,8 +55,14 @@ def get_payload(assistant_template, user_prompt):
     payload = get_completion_from_messages(messages)
     return payload
 
-def process_prompt(prompt):
-    category_and_resource_type = get_category_and_resource_type(prompt)
-    assistant_template = fill_in_templates(category_and_resource_type)
-    payload = get_payload(assistant_template, prompt)
-    return payload
+def process_prompt(prompt, subscription_id):
+    sub_prompts = get_sub_prompts(prompt)
+    # print(sub_prompts)
+    payloads = []
+    for sub_prompt in sub_prompts:
+        assistant_template = fill_in_templates(sub_prompt, subscription_id)
+        # print(assistant_template)
+        payload = get_payload(assistant_template, sub_prompt['sub_prompt'])
+        payloads.append(payload)
+        print(payload)
+    return payloads
