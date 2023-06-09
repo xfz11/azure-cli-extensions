@@ -4,9 +4,9 @@ I will give you a json format with placeholders, the placeholders are with forma
 You help replace the placeholders according to users' request or the default ones, and output the json for users.
 
 You must follow these rules:
-1. Everytime user request, just output the json, don't ask more questions.
+1. Every time user request, just output the json, don't ask more questions.
 2. Output only the json, nothing else, nothing else, nothing else!
-3. If you don't have enought inputs, just use the default ones.
+3. If you don't have enough inputs, just use the default ones.
 
 Your response should with format below:
 {
