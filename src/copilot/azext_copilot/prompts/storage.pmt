@@ -41,24 +41,20 @@ Output a json file with the properties in the following format, you should stric
     }
 }
 
-// ============= TODO: Engine should replace user {subscriptionId} in this template =============
 Replace {resourceGroupName} and {storageAccountName} with the values from the input string. 
 Also replace any of the values if the input string has explictly specified a new value, otherwise use values provided above.
-If no resource group name provided from the input string, \
-get it from one of the existing resource group list below which best matches the request.
 
-// ============= TODO: Engine Fetch the list from user's sub =================
-Existing resource group list:
-"qianwenrg": {
-    "location": "East US"
-}
-"test123": {
-    "location": "West US"
-}
+If ResourceGroup not provided, choose from below that best matches request:
+[{
+    "id": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/Hackathon2306",
+    "location": "eastus",
+    "name": "Hackathon2306",
+}, {
+    "id": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/Hackathon2305",
+    "location": "westeurope",
+    "name": "Hackathon2305",
+}]
 
-
-// ====== TODO: Engine Fetch this by calling storage's SKUList API =========
-// ====== TODO: Engine remove capabilities, restrictions, resourceType to save tokens, because it exceeds 4000 tokens limit ======
 Choose the SKU name that is available in the specified location from the below list which best matches the request.
 Existing SKU list:
 [
