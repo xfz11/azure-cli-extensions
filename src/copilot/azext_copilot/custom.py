@@ -12,7 +12,7 @@ logger = get_logger(__name__)
 
 def create_copilot(cmd, prompt):
     sub_id = get_subscription_id(cmd.cli_ctx)
-    process_prompt(prompt, sub_id)
+    payloads = process_prompt(prompt, sub_id)
 
 
 def list_copilot(cmd, resource_group_name=None):

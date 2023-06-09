@@ -1,4 +1,4 @@
-from ._constants import CREATE_APP_TEMPLATE, CREATE_STORAGE_TEMPLATE, DEFAULT_RESOURCE_GROUP, DEFAULT_RESOURCE_GROUP_NAME
+from ._constants import CREATE_APP_TEMPLATE, CREATE_STORAGE_TEMPLATE, CREATE_CREATION_TEMPLATE, DEFAULT_RESOURCE_GROUP, DEFAULT_RESOURCE_GROUP_NAME
 from azure.identity import AzureCliCredential
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.storage import StorageManagementClient
@@ -78,15 +78,17 @@ def create_storage_template(subscription_id, use_default=True):
     )
     return template
 
-def create_connection_template():
-    pass
+def create_connection_template(source_resource_type, target_resource_type, subscription_id, use_default=True):
+    resource_id_list = []
+    resource_id_list_str = "[{\n" + ",\n".join(resource_id_list) + "\n}]"
+    template = CREATE_CREATION_TEMPLATE.format(resource_id_list=resource_id_list_str)
+
+    return template
 
 get_template = {
     'create resource': {
         'web app': create_app_template,
         'storage': create_storage_template,
     },
-    'connect resources': {
-        
-    }
+    'connect resources':create_connection_template
 }

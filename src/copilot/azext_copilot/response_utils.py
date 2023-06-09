@@ -31,13 +31,14 @@ def get_sub_prompts(user_prompt):
     sub_prompts = json.loads(sub_prompts)
     return sub_prompts
 
-def fill_in_templates(category, resources_types, subscription_id):
-    if len(resources_types) == 1:
-      return get_template[category][resources_types[0]](subscription_id)
-    elif len(resources_types) == 2:
-      pass
+def fill_in_templates(sub_prompt, subscription_id):
+    action = sub_prompt['action']
+    if action == "create resource":
+      return get_template[action][sub_prompt['resource_type']](subscription_id)
+    elif action == "connect resources":
+      return get_template[action](sub_prompt['source_resource_type'], sub_prompt['target_resource_type'], subscription_id)
     else:
-       print("too many resources types")
+       print("waiting for future release")
        return None
 
 def get_payload(assistant_template, user_prompt):
@@ -59,10 +60,9 @@ def process_prompt(prompt, subscription_id):
     # print(sub_prompts)
     payloads = []
     for sub_prompt in sub_prompts:
-        action = sub_prompt["action"]
-        resources_types = sub_prompt["resources_types"]
-        assistant_template = fill_in_templates(action, resources_types, subscription_id)
+        assistant_template = fill_in_templates(sub_prompt, subscription_id)
         # print(assistant_template)
         payload = get_payload(assistant_template, sub_prompt['sub_prompt'])
         payloads.append(payload)
-        # print(payload)
+        print(payload)
+    return payloads
