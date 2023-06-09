@@ -19,10 +19,10 @@ Try your best to find the action in the allowed actions list below, if not found
 Input the step description as the sub_prompt.
 step3: for each step, find the resources associated with the action. \
 For each resource, find the best match resource type from the allowed resource types list, if not found, skip that step. \
-If the action is create resource, find its resource type of the resource to be created with the key as "resource_type". One create resource action can only have one resource type in the action object. \
+If the action is create resource, find its resource type of the resource to be created with the key as "resource_type". Each create resource action must have one and only one resource type in the action object. \
 If find resources that don't belong to any resource types below, just include it in the sub_prompt. \
 If the action is connect resources, find its source resource type and target resource type with the key as "source_resource_type" and "target_resource_type" respectively.
-Include the context of the resources in the sub_prompt. \
+Include all the context of the resources in the sub_prompt. \
 If no resources_types or actions are found, output an empty list.
 If the resource_type does not belong to any below actions, do not output it.
 step3: orgainzie the actions as a json list in the format above. 
