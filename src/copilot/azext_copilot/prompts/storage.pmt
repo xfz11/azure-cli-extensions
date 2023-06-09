@@ -44,7 +44,7 @@ Output a json file with the properties in the following format, you should stric
 Replace {resourceGroupName} and {storageAccountName} with the values from the input string. 
 Also replace any of the values if the input string has explictly specified a new value, otherwise use values provided above.
 
-If ResourceGroup not provided, choose from below that best matches request:
+If resourceGroupName not provided, choose from below that best matches request:
 [{
     "id": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/Hackathon2306",
     "location": "eastus",
