@@ -45,6 +45,8 @@ web app
 storage
 container app
 mysql
+
+Output only the json, Do not output any other information.
 '''
 
 CREATE_APP_TEMPLATE = '''
@@ -70,10 +72,10 @@ Your response should with format below:
             "isXenon": false,
             "hyperV": false,
             "siteConfig": {{
-                "netFrameworkVersion": "v4.6",
+                "netFrameworkVersion": "",
                 "linuxFxVersion": "**Runtime**",
                 "appSettings": [],
-                "alwaysOn": true,
+                "alwaysOn": false,
                 "localMySqlEnabled": false,
                 "http20Enabled": true
             }},
@@ -89,15 +91,14 @@ If ResourceGroup not provided, choose from below that best matches request
 If WebAppName is provided, use the exact name provided.
 If WebAppName is not provided, use a random string with 10 characters, with prefix `app-`
 
-If AppServicePlanId not provided, choose from below that best matches request. 
+If AppServicePlanId not provided, choose from below that best matches request. The location of app service plan must be the same as the location of the web app.
 {app_service_plan_list}
 
 If Location not provided, use the most popular Azure Regions. Make sure that the location is the same as the AppServicePlan location.
 
-If Runtime not provided,  choose from below that best matches request
+If Runtime not provided,  choose from below that best matches request, you can only choose the Runtime like "DOTNETCORE:6.0" from the below list!!! Choose the latest version if there are multiple versions.
 {{
   "linux": [
-    "DOTNETCORE:7.0",
     "DOTNETCORE:6.0",
     "NODE:18-lts",
     "NODE:16-lts",
