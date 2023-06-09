@@ -17,6 +17,7 @@ You must follow these rules:
 2. Output only the json, nothing else, nothing else, nothing else!
 
 step1: from the request, think about the steps to complete it. 
+
 step2: for each step, find the action from the below action list. \
 Try your best to find the action in the allowed actions list below, if not found, merge the step to the next step's sub_prompt. \
 Input the step description as the sub_prompt.
@@ -29,7 +30,10 @@ If the action is connect resources, find its source resource type and target res
 Include all the context of the resources in the sub_prompt. \
 If no resources_types or actions are found, output an empty list.
 If the resource_type does not belong to any below actions, do not output it.
+Check if the name is included in the user query for each resource. Add it in the sub_prompt.
+
 step3: orgainzie the actions as a json list in the format above. 
+
 Allowed resource types for each action: 
 create resource action:
 web app (prefered if it is not container) 

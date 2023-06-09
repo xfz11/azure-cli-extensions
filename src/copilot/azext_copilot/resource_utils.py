@@ -5,6 +5,9 @@ import requests
 import json
 import time
 from azure.cli.core.azclierror import CLIInternalError
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 def get_resource_client(subscription_id):
     credential = AzureCliCredential()
@@ -106,8 +109,10 @@ def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None):
 def create_resource(payload):
     payload = json.loads(payload)
     if "linkerName" in payload:
+        logger.warning("Creating linker...")
         uri = payload["resourceUri"] + "/providers/Microsoft.ServiceLinker/linkers/" + payload["linkerName"] + "?api-version=" + payload["api-version"]
     else:
+        logger.warning("Creating resource...")
         uri = payload["id"]
     uri = "https://management.azure.com" + uri
 
