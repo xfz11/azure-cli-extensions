@@ -24717,6 +24717,58 @@
                 "sha256Digest": "8385c13f0f938930faaeed4dad67c1cc03b601bfb626e86e29bf87a310270166"
             }
         ],
+        "copilot": [
+            {
+                "downloadUrl": "https://servicelinkerstorage.blob.core.windows.net/cliextension/copilot-0.1.0-py3-none-any.whl",
+                "filename": "copilot-0.1.0-py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/copilot"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "copilot",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "openai"
+                            ]
+                        }
+                    ],
+                    "summary": "Microsoft Azure Command-Line Tools Copilot Extension",
+                    "version": "0.1.0"
+                },
+                "sha256Digest": "b4cb841ae4fdc48aedc3828106a38637542d6b8d2cf584713a7cc7d6f85c83a7"
+            }
+        ],
         "cosmosdb-preview": [
             {
                 "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/cosmosdb_preview-0.1.0-py2.py3-none-any.whl",
