@@ -4,7 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 
-# pylint: disable=too-many-locals,too-many-statements,unused-argument,too-many-positional-arguments
+# pylint: disable=too-many-locals,too-many-statements,unused-argument,too-many-positional-arguments,broad-exception-caught
+from knack.log import get_logger
+from knack.util import todict
+logger = get_logger(__name__)
+
+
 def connection_create_ext(cmd, client,
                           connection_name=None, client_type=None,
                           source_resource_group=None, source_id=None,
@@ -32,10 +37,19 @@ def connection_create_ext(cmd, client,
                           connstr_props=None,
                           fabric_workspace_uuid=None,
                           fabric_sql_db_uuid=None,
+                          no_recreate=False,
                           **kwargs,
                           ):
+
     from azure.cli.command_modules.serviceconnector.custom import connection_create_func
     from ._credential_free import get_enable_mi_for_db_linker_func
+    try:
+        linker = todict(client.get(resource_uri=source_id, linker_name=connection_name))
+        if linker is not None and linker.get('provisioningState') == 'Accepted':
+            logger.warning('Connection provisioningState is Accepted, please retry later to avoid conflict.')
+            return linker
+    except Exception as e:
+        logger.debug('No existing connection, start creating a new one. %s', e)
     return connection_create_func(cmd, client, connection_name, client_type,
                                   source_resource_group, source_id,
                                   target_resource_group, target_id,
@@ -59,6 +73,7 @@ def connection_create_ext(cmd, client,
                                   connstr_props=connstr_props,
                                   fabric_workspace_uuid=fabric_workspace_uuid,
                                   fabric_sql_db_uuid=fabric_sql_db_uuid,
+                                  no_recreate=no_recreate,
                                   **kwargs)
 
 

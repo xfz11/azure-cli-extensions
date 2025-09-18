@@ -150,6 +150,8 @@ def get_enable_mi_for_db_linker_func(yes=False, new=False):
 
         # create an Microsoft Entra user in db
         target_handler.create_aad_user()
+
+        logger.warning("Start to create connection %s ...", connection_name)
         return target_handler.get_auth_config(user_object_id)
 
     return enable_mi_for_db_linker

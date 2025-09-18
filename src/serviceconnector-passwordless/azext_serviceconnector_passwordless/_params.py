@@ -32,6 +32,9 @@ from ._resource_config import (
     EX_SUPPORTED_AUTH_TYPE,
     TARGET_RESOURCES_PARAMS,
 )
+from azure.cli.core.commands.parameters import (
+    get_three_state_flag
+)
 
 yes_arg_type = CLIArgumentType(
     options_list=['--yes', '-y'],
@@ -83,6 +86,13 @@ def add_target_resource_block(context, target):
         context.ignore('enable_csi')
 
 
+def add_no_recreate_arguments(context):
+    context.argument('no_recreate', options_list=['--no-recreate'],
+                     arg_type=get_three_state_flag(), default=False,
+                     help='Indicates whether to skip execute creation operation \
+                           when no updates to an existing connection exists')
+
+
 def load_arguments(self, _):
     source = RESOURCE.Local
     for target in TARGET_RESOURCES_PARAMS:
@@ -114,5 +124,6 @@ def load_arguments(self, _):
                 add_customized_keys_argument(c)
                 add_connstr_props_argument(c)
                 add_opt_out_argument(c)
+                add_no_recreate_arguments(c)
                 c.argument('yes', arg_type=yes_arg_type)
                 c.argument('new', arg_type=new_arg_type)
